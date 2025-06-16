@@ -118,6 +118,47 @@ CMD ["npm", "start"]
 - DigitalOcean App Platform: Standard Node.js app
 - AWS/GCP/Azure: Container or VM deployment
 
+## n8n Integration
+
+To use AllegroMCP with n8n's MCP Client tool node:
+
+### Configuration
+1. **SSE Endpoint**: Enter your server URL with `/sse` path
+   ```
+   http://your-server:5000/sse
+   ```
+
+2. **Authentication**: Select "None" (AllegroMCP runs in public mode)
+
+3. **Tools to Include**: Select "All" to access all 13 Allegro tools
+
+### Available Tools in n8n
+Once connected, you'll have access to:
+- **Order Management**: Monitor events, get details, update status
+- **Dispute Resolution**: List disputes, send messages, handle attachments  
+- **Returns Processing**: Process refunds, reject returns, commission refunds
+
+### Example n8n Workflow
+```json
+{
+  "nodes": [
+    {
+      "name": "MCP Client",
+      "type": "@n8n/n8n-nodes-mcp.mcpClient",
+      "parameters": {
+        "sseEndpoint": "http://localhost:5000/sse",
+        "authentication": "none",
+        "toolsToInclude": "all",
+        "tool": "get_order_details",
+        "toolParameters": {
+          "orderId": "12345"
+        }
+      }
+    }
+  ]
+}
+```
+
 ## Testing
 
 ```bash
