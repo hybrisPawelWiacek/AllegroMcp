@@ -3,7 +3,7 @@ import type { Tool } from 'fastmcp';
 import { mockApi } from '../../mock/index.js';
 import { handleToolError, DisputeNotFoundError } from '../../utils/errors.js';
 
-export const uploadDisputeAttachmentTool: Tool = {
+export const uploadDisputeAttachmentTool: Tool<any, any> = {
   name: 'upload_dispute_attachment',
   description: 'Upload a file attachment to support dispute resolution. Useful for providing evidence, photos, or documentation.',
   parameters: z.object({

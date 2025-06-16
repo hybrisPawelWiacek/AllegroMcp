@@ -1,48 +1,33 @@
 import { z } from 'zod';
-import type { Tool } from 'fastmcp';
 import { mockApi } from '../../mock/index.js';
 import { handleToolError, OrderNotFoundError } from '../../utils/errors.js';
-
-export const getOrderDetailsTool: Tool<any, any> = {
-  name: 'get_order_details',
-  description: 'Retrieve comprehensive order information including buyer details, items, delivery information, and payment status.',
-  parameters: z.object({
-    order_id: z.string()
-      .min(1, 'Order ID cannot be empty')
-      .describe('Allegro checkout form ID (order identifier)')
-  }),
-  execute: async ({ order_id }, { reportProgress }) => {
-    try {
-      await reportProgress({ progress: 25, total: 100 });
-
-      const order = await mockApi.simulateApiCall(async () => {
-        return await mockApi.orders.getOrder(order_id);
-      });
-
-      if (!order) {
-        throw new OrderNotFoundError(order_id);
-      }
-
-      await reportProgress({ progress: 75, total: 100 });
-
-      const shipments = await mockApi.orders.getShipments(order_id);
-
-      await reportProgress({ progress: 100, total: 100 });
-
-      // Calculate totals
-      const itemsTotal = order.lineItems.reduce((sum, item) => 
-        sum + parseFloat(item.price.amount) * item.quantity, 0
-      );
-      const deliveryTotal = parseFloat(order.delivery.cost.amount);
-      const surchargesTotal = order.surcharges.reduce((sum, surcharge) => 
-        sum + parseFloat(surcharge.value.amount), 0
-      );
-      const discountsTotal = order.discounts.reduce((sum, discount) => 
-        sum + parseFloat(discount.value.amount), 0
-      );
-      const totalAmount = itemsTotal + deliveryTotal + surchargesTotal - discountsTotal;
-
-      return `📦 **Order Details**
+export const getOrderDetailsTool = {
+    name: 'get_order_details',
+    description: 'Retrieve comprehensive order information including buyer details, items, delivery information, and payment status.',
+    parameters: z.object({
+        order_id: z.string()
+            .min(1, 'Order ID cannot be empty')
+            .describe('Allegro checkout form ID (order identifier)')
+    }),
+    execute: async ({ order_id }, { reportProgress }) => {
+        try {
+            await reportProgress({ progress: 25, total: 100 });
+            const order = await mockApi.simulateApiCall(async () => {
+                return await mockApi.orders.getOrder(order_id);
+            });
+            if (!order) {
+                throw new OrderNotFoundError(order_id);
+            }
+            await reportProgress({ progress: 75, total: 100 });
+            const shipments = await mockApi.orders.getShipments(order_id);
+            await reportProgress({ progress: 100, total: 100 });
+            // Calculate totals
+            const itemsTotal = order.lineItems.reduce((sum, item) => sum + parseFloat(item.price.amount) * item.quantity, 0);
+            const deliveryTotal = parseFloat(order.delivery.cost.amount);
+            const surchargesTotal = order.surcharges.reduce((sum, surcharge) => sum + parseFloat(surcharge.value.amount), 0);
+            const discountsTotal = order.discounts.reduce((sum, discount) => sum + parseFloat(discount.value.amount), 0);
+            const totalAmount = itemsTotal + deliveryTotal + surchargesTotal - discountsTotal;
+            return `📦 **Order Details**
 
 **🆔 Order Information:**
 - Order ID: ${order.id}
@@ -101,9 +86,10 @@ ${index + 1}. Tracking: ${shipment.waybill}
 - **Final Total: ${totalAmount.toFixed(2)} PLN**
 
 ${order.note ? `**📝 Notes:** ${order.note}` : ''}`;
-
-    } catch (error) {
-      handleToolError(error, 'get_order_details');
+        }
+        catch (error) {
+            handleToolError(error, 'get_order_details');
+        }
     }
-  }
 };
+//# sourceMappingURL=details.js.map

@@ -10,23 +10,14 @@ async function main() {
     const server = createAllegroServer();
     
     // Configure for public SSE access
-    const port = parseInt(process.env.PORT || '8000');
+    const port = parseInt(process.env.PORT || '5000');
     
     logger.info('🚀 Starting AllegroMCP Server...');
     logger.info(`📡 SSE endpoint will be available at: http://localhost:${port}/sse`);
     logger.info(`🌍 Public access: ${process.env.ENABLE_PUBLIC_ACCESS === 'true' ? 'ENABLED' : 'DISABLED'}`);
     
     await server.start({
-      transportType: 'sse',
-      sse: {
-        endpoint: '/sse',
-        port: port,
-        // No authentication for public access
-        cors: {
-          origin: process.env.CORS_ORIGINS || '*',
-          credentials: false
-        }
-      }
+      transportType: 'stdio'
     });
     
     logger.info('✅ AllegroMCP Server is running and publicly accessible!');

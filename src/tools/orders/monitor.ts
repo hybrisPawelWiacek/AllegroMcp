@@ -3,7 +3,7 @@ import type { Tool } from 'fastmcp';
 import { mockApi } from '../../mock/index.js';
 import { handleToolError } from '../../utils/errors.js';
 
-export const monitorOrderEventsTool: Tool = {
+export const monitorOrderEventsTool: Tool<any, any> = {
   name: 'monitor_order_events',
   description: 'Monitor order events and changes in real-time. This tool polls for new order events like status changes, payment updates, and fulfillment progress.',
   parameters: z.object({

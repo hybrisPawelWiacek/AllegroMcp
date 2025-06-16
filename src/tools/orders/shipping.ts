@@ -3,7 +3,7 @@ import type { Tool } from 'fastmcp';
 import { mockApi } from '../../mock/index.js';
 import { handleToolError, OrderNotFoundError } from '../../utils/errors.js';
 
-export const addTrackingNumberTool: Tool = {
+export const addTrackingNumberTool: Tool<any, any> = {
   name: 'add_tracking_number',
   description: 'Add tracking information to an order shipment. This allows customers to track their packages and provides delivery updates.',
   parameters: z.object({

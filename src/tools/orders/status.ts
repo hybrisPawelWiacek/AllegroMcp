@@ -3,7 +3,7 @@ import type { Tool } from 'fastmcp';
 import { mockApi } from '../../mock/index.js';
 import { handleToolError, OrderNotFoundError } from '../../utils/errors.js';
 
-export const updateOrderStatusTool: Tool = {
+export const updateOrderStatusTool: Tool<any, any> = {
   name: 'update_order_status',
   description: 'Update the fulfillment status of an order. This affects how the order appears to the buyer and triggers automatic notifications.',
   parameters: z.object({
