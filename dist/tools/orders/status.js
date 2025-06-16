@@ -1,19 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOrderStatusTool = void 0;
-const zod_1 = require("zod");
-const index_js_1 = require("../../mock/index.js");
-const errors_js_1 = require("../../utils/errors.js");
-exports.updateOrderStatusTool = {
+import { z } from 'zod';
+import { mockApi } from '../../mock/index.js';
+import { handleToolError, OrderNotFoundError } from '../../utils/errors.js';
+export const updateOrderStatusTool = {
     name: 'update_order_status',
     description: 'Update the fulfillment status of an order. This affects how the order appears to the buyer and triggers automatic notifications.',
-    parameters: zod_1.z.object({
-        order_id: zod_1.z.string()
+    parameters: z.object({
+        order_id: z.string()
             .min(1, 'Order ID is required')
             .describe('Allegro checkout form ID'),
-        status: zod_1.z.enum(['NEW', 'PROCESSING', 'READY_FOR_SHIPMENT', 'SENT', 'DELIVERED', 'CANCELLED'])
+        status: z.enum(['NEW', 'PROCESSING', 'READY_FOR_SHIPMENT', 'SENT', 'DELIVERED', 'CANCELLED'])
             .describe('New order status to set'),
-        note: zod_1.z.string()
+        note: z.string()
             .optional()
             .describe('Optional note explaining the status change')
     }),
@@ -21,16 +18,16 @@ exports.updateOrderStatusTool = {
         try {
             await reportProgress({ progress: 20, total: 100 });
             // Validate current order exists
-            const currentOrder = await index_js_1.mockApi.simulateApiCall(async () => {
-                return await index_js_1.mockApi.orders.getOrder(order_id);
+            const currentOrder = await mockApi.simulateApiCall(async () => {
+                return await mockApi.orders.getOrder(order_id);
             });
             if (!currentOrder) {
-                throw new errors_js_1.OrderNotFoundError(order_id);
+                throw new OrderNotFoundError(order_id);
             }
             await reportProgress({ progress: 50, total: 100 });
             // Update the order status
-            const updatedOrder = await index_js_1.mockApi.simulateApiCall(async () => {
-                return await index_js_1.mockApi.orders.updateOrderStatus(order_id, status);
+            const updatedOrder = await mockApi.simulateApiCall(async () => {
+                return await mockApi.orders.updateOrderStatus(order_id, status);
             });
             await reportProgress({ progress: 100, total: 100 });
             // Determine status change message
@@ -66,7 +63,8 @@ ${status === 'SENT' ? '- Monitor delivery status and customer feedback' : ''}
 ${status === 'CANCELLED' ? '- Ensure refund is processed if payment was made' : ''}`;
         }
         catch (error) {
-            (0, errors_js_1.handleToolError)(error, 'update_order_status');
+            handleToolError(error, 'update_order_status');
         }
     }
 };
+//# sourceMappingURL=status.js.map

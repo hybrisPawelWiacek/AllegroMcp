@@ -1,13 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.mockReturnStore = exports.mockDisputeStore = exports.mockOrderStore = exports.mockApi = exports.MockApiService = void 0;
-const orders_js_1 = require("./orders.js");
-Object.defineProperty(exports, "mockOrderStore", { enumerable: true, get: function () { return orders_js_1.mockOrderStore; } });
-const disputes_js_1 = require("./disputes.js");
-Object.defineProperty(exports, "mockDisputeStore", { enumerable: true, get: function () { return disputes_js_1.mockDisputeStore; } });
-const returns_js_1 = require("./returns.js");
-Object.defineProperty(exports, "mockReturnStore", { enumerable: true, get: function () { return returns_js_1.mockReturnStore; } });
-const logger_js_1 = require("../utils/logger.js");
+import { mockOrderStore } from './orders.js';
+import { mockDisputeStore } from './disputes.js';
+import { mockReturnStore } from './returns.js';
+import { logger } from '../utils/logger.js';
 class MockApiService {
     static instance;
     delayMs;
@@ -35,19 +29,21 @@ class MockApiService {
             return await operation();
         }
         catch (error) {
-            logger_js_1.logger.error('Mock API operation failed:', error);
+            logger.error('Mock API operation failed:', error);
             throw error;
         }
     }
     get orders() {
-        return orders_js_1.mockOrderStore;
+        return mockOrderStore;
     }
     get disputes() {
-        return disputes_js_1.mockDisputeStore;
+        return mockDisputeStore;
     }
     get returns() {
-        return returns_js_1.mockReturnStore;
+        return mockReturnStore;
     }
 }
-exports.MockApiService = MockApiService;
-exports.mockApi = MockApiService.getInstance();
+export { MockApiService };
+export const mockApi = MockApiService.getInstance();
+export { mockOrderStore, mockDisputeStore, mockReturnStore };
+//# sourceMappingURL=index.js.map

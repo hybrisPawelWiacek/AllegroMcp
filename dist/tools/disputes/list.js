@@ -1,31 +1,28 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.listDisputesTool = void 0;
-const zod_1 = require("zod");
-const index_js_1 = require("../../mock/index.js");
-const errors_js_1 = require("../../utils/errors.js");
-exports.listDisputesTool = {
+import { z } from 'zod';
+import { mockApi } from '../../mock/index.js';
+import { handleToolError } from '../../utils/errors.js';
+export const listDisputesTool = {
     name: 'list_disputes',
     description: 'Retrieve all active disputes requiring attention. This helps prioritize customer communication and resolve issues promptly.',
-    parameters: zod_1.z.object({
-        limit: zod_1.z.number()
+    parameters: z.object({
+        limit: z.number()
             .min(1)
             .max(100)
             .default(20)
             .describe('Maximum number of disputes to return'),
-        offset: zod_1.z.number()
+        offset: z.number()
             .min(0)
             .default(0)
             .describe('Number of disputes to skip (for pagination)'),
-        status: zod_1.z.enum(['ONGOING', 'CLOSED', 'UNRESOLVED'])
+        status: z.enum(['ONGOING', 'CLOSED', 'UNRESOLVED'])
             .optional()
             .describe('Filter disputes by status')
     }),
     execute: async ({ limit, offset, status }, { reportProgress }) => {
         try {
             await reportProgress({ progress: 30, total: 100 });
-            const result = await index_js_1.mockApi.simulateApiCall(async () => {
-                return await index_js_1.mockApi.disputes.listDisputes(limit, offset);
+            const result = await mockApi.simulateApiCall(async () => {
+                return await mockApi.disputes.listDisputes(limit, offset);
             });
             await reportProgress({ progress: 80, total: 100 });
             // Filter by status if specified
@@ -81,7 +78,8 @@ ${urgentDisputes.length > 0 ? '3. Use send_dispute_message to provide solutions'
 **📈 Performance Tip:** Quick responses improve seller ratings and customer satisfaction.`;
         }
         catch (error) {
-            (0, errors_js_1.handleToolError)(error, 'list_disputes');
+            handleToolError(error, 'list_disputes');
         }
     }
 };
+//# sourceMappingURL=list.js.map

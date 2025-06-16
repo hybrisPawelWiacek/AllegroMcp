@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.mockReturnStore = void 0;
-const logger_js_1 = require("../utils/logger.js");
+import { logger } from '../utils/logger.js';
 const RETURN_REASONS = [
     'Produkt nie spełnia oczekiwań',
     'Uszkodzony podczas transportu',
@@ -107,7 +104,7 @@ class MockReturnStore {
             const returnItem = generateMockReturn();
             this.returns.set(returnItem.id, returnItem);
         }
-        logger_js_1.logger.info(`Mock return store initialized with ${this.returns.size} returns`);
+        logger.info(`Mock return store initialized with ${this.returns.size} returns`);
     }
     async getReturn(returnId) {
         let returnItem = this.returns.get(returnId);
@@ -115,7 +112,7 @@ class MockReturnStore {
             // Generate new return if not found
             returnItem = generateMockReturn(returnId);
             this.returns.set(returnId, returnItem);
-            logger_js_1.logger.debug(`Generated new mock return: ${returnId}`);
+            logger.debug(`Generated new mock return: ${returnId}`);
         }
         return returnItem;
     }
@@ -134,7 +131,7 @@ class MockReturnStore {
             code,
             createdAt: new Date().toISOString()
         });
-        logger_js_1.logger.info(`Rejected return ${returnId}: ${reason}`);
+        logger.info(`Rejected return ${returnId}: ${reason}`);
     }
     async processRefund(paymentId, reason, lineItems) {
         const refund = {
@@ -163,13 +160,13 @@ class MockReturnStore {
             updatedAt: new Date().toISOString()
         };
         this.refunds.set(refund.id, refund);
-        logger_js_1.logger.info(`Processed refund ${refund.id} for payment ${paymentId}`);
+        logger.info(`Processed refund ${refund.id} for payment ${paymentId}`);
         return refund;
     }
     async requestCommissionRefund(lineItemId, quantity) {
         const claimId = generateUUID();
         // Simulate commission refund claim
-        logger_js_1.logger.info(`Created commission refund claim ${claimId} for line item ${lineItemId}`);
+        logger.info(`Created commission refund claim ${claimId} for line item ${lineItemId}`);
         return claimId;
     }
     async getRefund(refundId) {
@@ -179,4 +176,5 @@ class MockReturnStore {
         return this.rejections.get(returnId);
     }
 }
-exports.mockReturnStore = new MockReturnStore();
+export const mockReturnStore = new MockReturnStore();
+//# sourceMappingURL=returns.js.map

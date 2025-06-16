@@ -1,15 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DEFAULT_REFUND_POLICY = void 0;
-exports.calculateRefundAmount = calculateRefundAmount;
-exports.validateReturnEligibility = validateReturnEligibility;
-exports.getRefundTimeline = getRefundTimeline;
-exports.formatRefundNotification = formatRefundNotification;
-exports.calculateCommissionRefund = calculateCommissionRefund;
-exports.validateRefundRequest = validateRefundRequest;
-exports.getRefundStatusInfo = getRefundStatusInfo;
 // Standard Polish e-commerce refund policy
-exports.DEFAULT_REFUND_POLICY = {
+export const DEFAULT_REFUND_POLICY = {
     returnPeriodDays: 14,
     allowDeliveryRefund: true,
     restockingFee: 0,
@@ -43,7 +33,7 @@ exports.DEFAULT_REFUND_POLICY = {
 /**
  * Calculate refund amount based on line items and policy
  */
-function calculateRefundAmount(lineItems, deliveryCost = '0.00', includeDelivery = false, restockingFeeRate = 0) {
+export function calculateRefundAmount(lineItems, deliveryCost = '0.00', includeDelivery = false, restockingFeeRate = 0) {
     const itemsTotal = lineItems.reduce((sum, item) => {
         return sum + (parseFloat(item.price) * item.quantity);
     }, 0);
@@ -64,7 +54,7 @@ function calculateRefundAmount(lineItems, deliveryCost = '0.00', includeDelivery
 /**
  * Validate if a return is eligible based on policy
  */
-function validateReturnEligibility(orderDate, category, condition, policy = exports.DEFAULT_REFUND_POLICY) {
+export function validateReturnEligibility(orderDate, category, condition, policy = DEFAULT_REFUND_POLICY) {
     const reasons = [];
     const warnings = [];
     let eligible = true;
@@ -97,7 +87,7 @@ function validateReturnEligibility(orderDate, category, condition, policy = expo
 /**
  * Generate refund timeline based on payment method
  */
-function getRefundTimeline(paymentMethod) {
+export function getRefundTimeline(paymentMethod) {
     const timelines = {
         'PAYU': {
             estimatedDays: 3,
@@ -152,7 +142,7 @@ function getRefundTimeline(paymentMethod) {
 /**
  * Format refund details for customer communication
  */
-function formatRefundNotification(refund, calculation, timeline) {
+export function formatRefundNotification(refund, calculation, timeline) {
     return `
 🎉 Potwierdzenie zwrotu środków
 
@@ -183,7 +173,7 @@ Zespół Obsługi Klienta
 /**
  * Calculate commission refund estimate
  */
-function calculateCommissionRefund(saleAmount, commissionRate = 0.08, quantity = 1) {
+export function calculateCommissionRefund(saleAmount, commissionRate = 0.08, quantity = 1) {
     const originalCommission = saleAmount * commissionRate * quantity;
     const refundAmount = originalCommission;
     return {
@@ -195,7 +185,7 @@ function calculateCommissionRefund(saleAmount, commissionRate = 0.08, quantity =
 /**
  * Validate refund request parameters
  */
-function validateRefundRequest(paymentId, lineItems) {
+export function validateRefundRequest(paymentId, lineItems) {
     const errors = [];
     // Validate payment ID format
     if (!paymentId || paymentId.length < 10) {
@@ -228,7 +218,7 @@ function validateRefundRequest(paymentId, lineItems) {
 /**
  * Get refund status display information
  */
-function getRefundStatusInfo(status) {
+export function getRefundStatusInfo(status) {
     const statusInfo = {
         'PENDING': {
             icon: '⏳',
@@ -256,3 +246,4 @@ function getRefundStatusInfo(status) {
         customerMessage: 'Status zwrotu jest nieznany. Skontaktuj się z obsługą klienta.'
     };
 }
+//# sourceMappingURL=refunds.js.map

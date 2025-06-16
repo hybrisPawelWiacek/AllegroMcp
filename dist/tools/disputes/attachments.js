@@ -1,23 +1,20 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadDisputeAttachmentTool = void 0;
-const zod_1 = require("zod");
-const index_js_1 = require("../../mock/index.js");
-const errors_js_1 = require("../../utils/errors.js");
-exports.uploadDisputeAttachmentTool = {
+import { z } from 'zod';
+import { mockApi } from '../../mock/index.js';
+import { handleToolError, DisputeNotFoundError } from '../../utils/errors.js';
+export const uploadDisputeAttachmentTool = {
     name: 'upload_dispute_attachment',
     description: 'Upload a file attachment to support dispute resolution. Useful for providing evidence, photos, or documentation.',
-    parameters: zod_1.z.object({
-        dispute_id: zod_1.z.string()
+    parameters: z.object({
+        dispute_id: z.string()
             .min(1, 'Dispute ID is required')
             .describe('UUID of the dispute'),
-        file_name: zod_1.z.string()
+        file_name: z.string()
             .min(1, 'File name is required')
             .describe('Name of the file being uploaded'),
-        file_content: zod_1.z.string()
+        file_content: z.string()
             .min(1, 'File content is required')
             .describe('Base64 encoded file content'),
-        file_type: zod_1.z.enum(['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'text/plain'])
+        file_type: z.enum(['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'text/plain'])
             .default('image/jpeg')
             .describe('MIME type of the file')
     }),
@@ -25,9 +22,9 @@ exports.uploadDisputeAttachmentTool = {
         try {
             await reportProgress({ progress: 20, total: 100 });
             // Validate dispute exists
-            const dispute = await index_js_1.mockApi.disputes.getDispute(dispute_id);
+            const dispute = await mockApi.disputes.getDispute(dispute_id);
             if (!dispute) {
-                throw new errors_js_1.DisputeNotFoundError(dispute_id);
+                throw new DisputeNotFoundError(dispute_id);
             }
             await reportProgress({ progress: 40, total: 100 });
             // Validate file content
@@ -43,8 +40,8 @@ exports.uploadDisputeAttachmentTool = {
             }
             await reportProgress({ progress: 70, total: 100 });
             // Upload attachment
-            const attachmentId = await index_js_1.mockApi.simulateApiCall(async () => {
-                return await index_js_1.mockApi.disputes.uploadAttachment(dispute_id, file_name, file_content);
+            const attachmentId = await mockApi.simulateApiCall(async () => {
+                return await mockApi.disputes.uploadAttachment(dispute_id, file_name, file_content);
             });
             await reportProgress({ progress: 100, total: 100 });
             // Determine file category
@@ -93,7 +90,7 @@ ${fileCategory.bestPractices}
 - Consider adding description in your message explaining the attachment`;
         }
         catch (error) {
-            (0, errors_js_1.handleToolError)(error, 'upload_dispute_attachment');
+            handleToolError(error, 'upload_dispute_attachment');
         }
     }
 };
@@ -138,3 +135,4 @@ function determineFileCategory(fileType, fileName) {
         };
     }
 }
+//# sourceMappingURL=attachments.js.map

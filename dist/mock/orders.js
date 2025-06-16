@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.mockOrderStore = void 0;
-const logger_js_1 = require("../utils/logger.js");
+import { logger } from '../utils/logger.js';
 // Polish mock data constants
 const POLISH_FIRST_NAMES = ['Jan', 'Anna', 'Piotr', 'Katarzyna', 'Tomasz', 'Agnieszka', 'Krzysztof', 'Małgorzata', 'Andrzej', 'Barbara'];
 const POLISH_LAST_NAMES = ['Kowalski', 'Nowak', 'Wiśniewski', 'Wójcik', 'Kowalczyk', 'Kamiński', 'Lewandowski', 'Zieliński', 'Szymański', 'Woźniak'];
@@ -191,7 +188,7 @@ class MockOrderStore {
         for (let i = 0; i < 20; i++) {
             this.events.push(generateOrderEvent());
         }
-        logger_js_1.logger.info(`Mock order store initialized with ${this.orders.size} orders and ${this.events.length} events`);
+        logger.info(`Mock order store initialized with ${this.orders.size} orders and ${this.events.length} events`);
     }
     async getOrder(orderId) {
         let order = this.orders.get(orderId);
@@ -199,7 +196,7 @@ class MockOrderStore {
             // Generate new order if not found
             order = generateMockOrder(orderId);
             this.orders.set(orderId, order);
-            logger_js_1.logger.debug(`Generated new mock order: ${orderId}`);
+            logger.debug(`Generated new mock order: ${orderId}`);
         }
         return order;
     }
@@ -233,7 +230,7 @@ class MockOrderStore {
             order: { checkoutForm: { id: orderId } },
             occurredAt: new Date().toISOString()
         });
-        logger_js_1.logger.info(`Updated order ${orderId} status to ${status}`);
+        logger.info(`Updated order ${orderId} status to ${status}`);
         return order;
     }
     async addShipment(orderId, carrierName, trackingNumber, lineItemIds) {
@@ -257,7 +254,7 @@ class MockOrderStore {
         this.shipments.set(orderId, orderShipments);
         // Update order status to SENT
         await this.updateOrderStatus(orderId, 'SENT');
-        logger_js_1.logger.info(`Added shipment for order ${orderId}: ${trackingNumber}`);
+        logger.info(`Added shipment for order ${orderId}: ${trackingNumber}`);
         return shipment;
     }
     async getEvents(fromEventId, limit = 100) {
@@ -278,4 +275,5 @@ class MockOrderStore {
         return this.shipments.get(orderId) || [];
     }
 }
-exports.mockOrderStore = new MockOrderStore();
+export const mockOrderStore = new MockOrderStore();
+//# sourceMappingURL=orders.js.map

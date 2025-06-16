@@ -1,21 +1,18 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.requestCommissionRefundTool = exports.processRefundTool = exports.rejectReturnTool = void 0;
-const zod_1 = require("zod");
-const index_js_1 = require("../../mock/index.js");
-const errors_js_1 = require("../../utils/errors.js");
-exports.rejectReturnTool = {
+import { z } from 'zod';
+import { mockApi } from '../../mock/index.js';
+import { handleToolError, ReturnNotFoundError } from '../../utils/errors.js';
+export const rejectReturnTool = {
     name: 'reject_return',
     description: 'Reject a customer return request with specific reason and code. Use this when the return does not meet return policy requirements.',
-    parameters: zod_1.z.object({
-        return_id: zod_1.z.string()
+    parameters: z.object({
+        return_id: z.string()
             .min(1, 'Return ID is required')
             .describe('UUID of the customer return to reject'),
-        reason: zod_1.z.string()
+        reason: z.string()
             .min(10, 'Reason must be at least 10 characters')
             .max(1000, 'Reason cannot exceed 1000 characters')
             .describe('Detailed explanation for the rejection'),
-        rejection_code: zod_1.z.enum([
+        rejection_code: z.enum([
             'EXCEEDED_RETURN_PERIOD',
             'ITEM_USED_OR_DAMAGED',
             'MISSING_ORIGINAL_PACKAGING',
@@ -28,16 +25,16 @@ exports.rejectReturnTool = {
         try {
             await reportProgress({ progress: 25, total: 100 });
             // Validate return exists
-            const returnData = await index_js_1.mockApi.simulateApiCall(async () => {
-                return await index_js_1.mockApi.returns.getReturn(return_id);
+            const returnData = await mockApi.simulateApiCall(async () => {
+                return await mockApi.returns.getReturn(return_id);
             });
             if (!returnData) {
-                throw new errors_js_1.ReturnNotFoundError(return_id);
+                throw new ReturnNotFoundError(return_id);
             }
             await reportProgress({ progress: 60, total: 100 });
             // Process rejection
-            await index_js_1.mockApi.simulateApiCall(async () => {
-                return await index_js_1.mockApi.returns.rejectReturn(return_id, reason, rejection_code);
+            await mockApi.simulateApiCall(async () => {
+                return await mockApi.returns.rejectReturn(return_id, reason, rejection_code);
             });
             await reportProgress({ progress: 100, total: 100 });
             // Analyze rejection impact
@@ -121,27 +118,27 @@ ${daysSinceCreated <= 7 ? '- Recent return rejection may surprise customer' : ''
 - Review similar returns to prevent future issues`;
         }
         catch (error) {
-            (0, errors_js_1.handleToolError)(error, 'reject_return');
+            handleToolError(error, 'reject_return');
         }
     }
 };
-exports.processRefundTool = {
+export const processRefundTool = {
     name: 'process_refund',
     description: 'Process a refund for a payment, typically for returns or order cancellations. This initiates the actual money transfer back to the customer.',
-    parameters: zod_1.z.object({
-        payment_id: zod_1.z.string()
+    parameters: z.object({
+        payment_id: z.string()
             .min(1, 'Payment ID is required')
             .describe('UUID of the original payment to refund'),
-        reason: zod_1.z.string()
+        reason: z.string()
             .min(5, 'Reason must be at least 5 characters')
             .max(500, 'Reason cannot exceed 500 characters')
             .describe('Reason for the refund'),
-        line_items: zod_1.z.array(zod_1.z.object({
-            line_item_id: zod_1.z.string().describe('ID of the line item to refund'),
-            quantity: zod_1.z.number().min(1).describe('Quantity to refund'),
-            amount: zod_1.z.string().regex(/^\d+\.\d{2}$/).describe('Refund amount in PLN (e.g., "99.99")')
+        line_items: z.array(z.object({
+            line_item_id: z.string().describe('ID of the line item to refund'),
+            quantity: z.number().min(1).describe('Quantity to refund'),
+            amount: z.string().regex(/^\d+\.\d{2}$/).describe('Refund amount in PLN (e.g., "99.99")')
         })).min(1, 'At least one line item must be specified'),
-        refund_delivery_cost: zod_1.z.boolean()
+        refund_delivery_cost: z.boolean()
             .default(false)
             .describe('Whether to refund delivery costs as well')
     }),
@@ -154,8 +151,8 @@ exports.processRefundTool = {
             const totalRefund = totalItemRefund + deliveryRefund;
             await reportProgress({ progress: 50, total: 100 });
             // Process the refund
-            const refund = await index_js_1.mockApi.simulateApiCall(async () => {
-                return await index_js_1.mockApi.returns.processRefund(payment_id, reason, line_items);
+            const refund = await mockApi.simulateApiCall(async () => {
+                return await mockApi.returns.processRefund(payment_id, reason, line_items);
             });
             await reportProgress({ progress: 100, total: 100 });
             // Determine refund timeline based on payment method
@@ -237,21 +234,21 @@ ${index + 1}. Line Item: ${item.line_item_id}
 - Documentation: Complete`;
         }
         catch (error) {
-            (0, errors_js_1.handleToolError)(error, 'process_refund');
+            handleToolError(error, 'process_refund');
         }
     }
 };
-exports.requestCommissionRefundTool = {
+export const requestCommissionRefundTool = {
     name: 'request_commission_refund',
     description: 'Request a refund of Allegro commission fees for cancelled or returned orders. This helps recover platform fees when orders are not completed.',
-    parameters: zod_1.z.object({
-        line_item_id: zod_1.z.string()
+    parameters: z.object({
+        line_item_id: z.string()
             .min(1, 'Line item ID is required')
             .describe('UUID of the line item for which to request commission refund'),
-        quantity: zod_1.z.number()
+        quantity: z.number()
             .min(1, 'Quantity must be at least 1')
             .describe('Quantity of items for commission refund request'),
-        reason: zod_1.z.enum([
+        reason: z.enum([
             'CUSTOMER_RETURN',
             'ORDER_CANCELLATION',
             'PRODUCT_DEFECT',
@@ -264,8 +261,8 @@ exports.requestCommissionRefundTool = {
         try {
             await reportProgress({ progress: 30, total: 100 });
             // Process commission refund request
-            const claimId = await index_js_1.mockApi.simulateApiCall(async () => {
-                return await index_js_1.mockApi.returns.requestCommissionRefund(line_item_id, quantity);
+            const claimId = await mockApi.simulateApiCall(async () => {
+                return await mockApi.returns.requestCommissionRefund(line_item_id, quantity);
             });
             await reportProgress({ progress: 100, total: 100 });
             // Calculate estimated commission refund (mock calculation)
@@ -370,7 +367,7 @@ ${approvalLikelihood.level === '🟡 MEDIUM' ? 'Moderate chance - some factors m
 ${approvalLikelihood.level === '🔴 LOW' ? 'Lower chance - may require additional evidence' : ''}`;
         }
         catch (error) {
-            (0, errors_js_1.handleToolError)(error, 'request_commission_refund');
+            handleToolError(error, 'request_commission_refund');
         }
     }
 };
@@ -477,3 +474,4 @@ function determineApprovalLikelihood(reason) {
             };
     }
 }
+//# sourceMappingURL=process.js.map

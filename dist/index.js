@@ -1,39 +1,42 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv_1 = require("dotenv");
-const server_js_1 = require("./server.js");
-const logger_js_1 = require("./utils/logger.js");
+import { config } from 'dotenv';
+import { createAllegroServer } from './server.js';
+import { logger } from './utils/logger.js';
 // Load environment variables
-(0, dotenv_1.config)();
+config();
 async function main() {
     try {
-        const server = (0, server_js_1.createAllegroServer)();
-        // Configure for public SSE access
+        const server = createAllegroServer();
+        // Configure for public access
         const port = parseInt(process.env.PORT || '5000');
-        logger_js_1.logger.info('🚀 Starting AllegroMCP Server...');
-        logger_js_1.logger.info(`📡 SSE endpoint will be available at: http://localhost:${port}/sse`);
-        logger_js_1.logger.info(`🌍 Public access: ${process.env.ENABLE_PUBLIC_ACCESS === 'true' ? 'ENABLED' : 'DISABLED'}`);
+        logger.info('🚀 Starting AllegroMCP Server...');
+        logger.info(`📡 SSE endpoint will be available at: http://0.0.0.0:${port}/sse`);
+        logger.info(`🌍 Public access: ENABLED`);
         await server.start({
-            transportType: 'stdio'
+            transportType: 'httpStream',
+            httpStream: {
+                port: port,
+                endpoint: '/sse'
+            }
         });
-        logger_js_1.logger.info('✅ AllegroMCP Server is running and publicly accessible!');
-        logger_js_1.logger.info(`🔗 Connect via: http://localhost:${port}/sse`);
+        logger.info('✅ AllegroMCP Server is running and publicly accessible!');
+        logger.info(`🔗 Connect via: http://0.0.0.0:${port}/sse`);
     }
     catch (error) {
-        logger_js_1.logger.error('❌ Failed to start AllegroMCP Server:', error);
+        logger.error('❌ Failed to start AllegroMCP Server:', error);
         process.exit(1);
     }
 }
 // Handle graceful shutdown
 process.on('SIGINT', () => {
-    logger_js_1.logger.info('🛑 Received SIGINT, shutting down gracefully...');
+    logger.info('🛑 Received SIGINT, shutting down gracefully...');
     process.exit(0);
 });
 process.on('SIGTERM', () => {
-    logger_js_1.logger.info('🛑 Received SIGTERM, shutting down gracefully...');
+    logger.info('🛑 Received SIGTERM, shutting down gracefully...');
     process.exit(0);
 });
 main().catch((error) => {
-    logger_js_1.logger.error('💥 Unhandled error in main:', error);
+    logger.error('💥 Unhandled error in main:', error);
     process.exit(1);
 });
+//# sourceMappingURL=index.js.map

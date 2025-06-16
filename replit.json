@@ -1,0 +1,15 @@
+{
+  "language": "nodejs",
+  "run": "npx tsx src/index.ts",
+  "entrypoint": "src/index.ts",
+  "modules": ["nodejs-20"],
+  "hidden": [".config", "package-lock.json"],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "deployment": {
+    "run": "npx tsx src/index.ts",
+    "build": "echo 'Build completed - using tsx for TypeScript execution'",
+    "deploymentTarget": "cloudrun"
+  }
+}

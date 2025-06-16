@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.mockDisputeStore = void 0;
-const logger_js_1 = require("../utils/logger.js");
+import { logger } from '../utils/logger.js';
 const DISPUTE_SUBJECTS = [
     'Przedmiot jest uszkodzony',
     'Nie otrzymałem zamówienia',
@@ -97,7 +94,7 @@ class MockDisputeStore {
             this.disputes.set(dispute.id, dispute);
             this.disputeMessages.set(dispute.id, generateMockDisputeMessages(dispute.id));
         }
-        logger_js_1.logger.info(`Mock dispute store initialized with ${this.disputes.size} disputes`);
+        logger.info(`Mock dispute store initialized with ${this.disputes.size} disputes`);
     }
     async listDisputes(limit = 20, offset = 0) {
         const allDisputes = Array.from(this.disputes.values());
@@ -111,7 +108,7 @@ class MockDisputeStore {
             dispute = generateMockDispute(disputeId);
             this.disputes.set(disputeId, dispute);
             this.disputeMessages.set(disputeId, generateMockDisputeMessages(disputeId));
-            logger_js_1.logger.debug(`Generated new mock dispute: ${disputeId}`);
+            logger.debug(`Generated new mock dispute: ${disputeId}`);
         }
         return dispute;
     }
@@ -151,7 +148,7 @@ class MockDisputeStore {
         dispute.messagesStatus = 'SELLER_REPLIED';
         dispute.updatedAt = new Date().toISOString();
         this.disputes.set(disputeId, dispute);
-        logger_js_1.logger.info(`Added message to dispute ${disputeId}`);
+        logger.info(`Added message to dispute ${disputeId}`);
         return message;
     }
     async uploadAttachment(disputeId, fileName, fileContent) {
@@ -166,11 +163,12 @@ class MockDisputeStore {
             disputeId,
             uploadedAt: new Date().toISOString()
         });
-        logger_js_1.logger.info(`Uploaded attachment ${fileName} for dispute ${disputeId}`);
+        logger.info(`Uploaded attachment ${fileName} for dispute ${disputeId}`);
         return attachmentId;
     }
     async getAttachment(attachmentId) {
         return this.attachments.get(attachmentId);
     }
 }
-exports.mockDisputeStore = new MockDisputeStore();
+export const mockDisputeStore = new MockDisputeStore();
+//# sourceMappingURL=disputes.js.map
