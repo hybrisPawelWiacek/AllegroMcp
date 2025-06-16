@@ -2,10 +2,7 @@ const https = require('https');
 
 const testEndpoints = [
   'https://f28d061b-c35a-436c-a99d-2755b228799a-00-1owz4gqnq1vk5.kirk.replit.dev/sse',
-  'https://f28d061b-c35a-436c-a99d-2755b228799a-00-1owz4gqnq1vk5.kirk.replit.dev/mcp',
-  'https://f28d061b-c35a-436c-a99d-2755b228799a-00-1owz4gqnq1vk5.kirk.replit.dev/',
-  'https://f28d061b-c35a-436c-a99d-2755b228799a-00-1owz4gqnq1vk5.kirk.replit.dev:5000/sse',
-  'https://f28d061b-c35a-436c-a99d-2755b228799a-00-1owz4gqnq1vk5.kirk.replit.dev:5000/'
+  'https://f28d061b-c35a-436c-a99d-2755b228799a-00-1owz4gqnq1vk5.kirk.replit.dev/mcp'
 ];
 
 testEndpoints.forEach((url, index) => {
