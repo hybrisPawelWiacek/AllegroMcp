@@ -21,7 +21,7 @@ declare class MockReturnStore {
         reason: string;
         code: string;
         createdAt: string;
-    } | undefined>;
+    }>;
 }
 export declare const mockReturnStore: MockReturnStore;
 export {};

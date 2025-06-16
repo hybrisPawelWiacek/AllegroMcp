@@ -12,16 +12,7 @@ async function main() {
         logger.info(`📡 SSE endpoint will be available at: http://localhost:${port}/sse`);
         logger.info(`🌍 Public access: ${process.env.ENABLE_PUBLIC_ACCESS === 'true' ? 'ENABLED' : 'DISABLED'}`);
         await server.start({
-            transportType: 'sse',
-            sse: {
-                endpoint: '/sse',
-                port: port,
-                // No authentication for public access
-                cors: {
-                    origin: process.env.CORS_ORIGINS || '*',
-                    credentials: false
-                }
-            }
+            transportType: 'stdio'
         });
         logger.info('✅ AllegroMCP Server is running and publicly accessible!');
         logger.info(`🔗 Connect via: http://localhost:${port}/sse`);

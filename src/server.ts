@@ -5,7 +5,7 @@ import { logger } from './utils/logger.js';
 export function createAllegroServer(): FastMCP {
   const server = new FastMCP({
     name: process.env.MCP_SERVER_NAME || 'allegro-mcp',
-    version: process.env.MCP_SERVER_VERSION || '1.0.0',
+    version: '1.0.0' as `${number}.${number}.${number}`,
     instructions: `
 AllegroMCP provides AI agents with comprehensive access to Allegro e-commerce operations.
 
@@ -39,15 +39,11 @@ AllegroMCP provides AI agents with comprehensive access to Allegro e-commerce op
 
   // Add server events for monitoring
   server.on('connect', (event) => {
-    logger.info(`🔗 Client connected: ${event.session?.id || 'unknown'}`);
+    logger.info(`🔗 Client connected: ${event.session || 'unknown'}`);
   });
 
   server.on('disconnect', (event) => {
-    logger.info(`🔌 Client disconnected: ${event.session?.id || 'unknown'}`);
-  });
-
-  server.on('error', (error) => {
-    logger.error('🚨 Server error:', error);
+    logger.info(`🔌 Client disconnected: ${event.session || 'unknown'}`);
   });
 
   return server;

@@ -3,7 +3,7 @@ import type { Tool } from 'fastmcp';
 import { mockApi } from '../../mock/index.js';
 import { handleToolError, ReturnNotFoundError } from '../../utils/errors.js';
 
-export const getReturnDetailsTool: Tool = {
+export const getReturnDetailsTool: Tool<any, any> = {
   name: 'get_return_details',
   description: 'Retrieve comprehensive information about a customer return request including items, reasons, and refund calculations.',
   parameters: z.object({

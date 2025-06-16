@@ -3,7 +3,7 @@ import type { Tool } from 'fastmcp';
 import { mockApi } from '../../mock/index.js';
 import { handleToolError, DisputeNotFoundError } from '../../utils/errors.js';
 
-export const getDisputeMessagesTool: Tool = {
+export const getDisputeMessagesTool: Tool<any, any> = {
   name: 'get_dispute_messages',
   description: 'Retrieve the complete message thread from a dispute to understand the conversation history and context.',
   parameters: z.object({
@@ -90,7 +90,7 @@ ${lastMessage.text.toLowerCase().includes('zwrot') ? '- Buyer wants return - pro
   }
 };
 
-export const sendDisputeMessageTool: Tool = {
+export const sendDisputeMessageTool: Tool<any, any> = {
   name: 'send_dispute_message',
   description: 'Send a message to the buyer in an existing dispute. This is your primary tool for customer communication and dispute resolution.',
   parameters: z.object({

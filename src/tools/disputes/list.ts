@@ -3,7 +3,7 @@ import type { Tool } from 'fastmcp';
 import { mockApi } from '../../mock/index.js';
 import { handleToolError } from '../../utils/errors.js';
 
-export const listDisputesTool: Tool = {
+export const listDisputesTool: Tool<any, any> = {
   name: 'list_disputes',
   description: 'Retrieve all active disputes requiring attention. This helps prioritize customer communication and resolve issues promptly.',
   parameters: z.object({

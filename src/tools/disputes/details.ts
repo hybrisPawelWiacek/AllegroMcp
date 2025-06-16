@@ -3,7 +3,7 @@ import type { Tool } from 'fastmcp';
 import { mockApi } from '../../mock/index.js';
 import { handleToolError, DisputeNotFoundError } from '../../utils/errors.js';
 
-export const getDisputeDetailsTool: Tool = {
+export const getDisputeDetailsTool: Tool<any, any> = {
   name: 'get_dispute_details',
   description: 'Get comprehensive information about a specific dispute including timeline, participants, and current status.',
   parameters: z.object({

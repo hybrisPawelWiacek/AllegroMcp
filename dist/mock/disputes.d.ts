@@ -17,7 +17,7 @@ declare class MockDisputeStore {
         fileName: string;
         disputeId: string;
         uploadedAt: string;
-    } | undefined>;
+    }>;
 }
 export declare const mockDisputeStore: MockDisputeStore;
 export {};

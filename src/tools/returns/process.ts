@@ -3,7 +3,7 @@ import type { Tool } from 'fastmcp';
 import { mockApi } from '../../mock/index.js';
 import { handleToolError, ReturnNotFoundError } from '../../utils/errors.js';
 
-export const rejectReturnTool: Tool = {
+export const rejectReturnTool: Tool<any, any> = {
   name: 'reject_return',
   description: 'Reject a customer return request with specific reason and code. Use this when the return does not meet return policy requirements.',
   parameters: z.object({
@@ -133,7 +133,7 @@ ${daysSinceCreated <= 7 ? '- Recent return rejection may surprise customer' : ''
   }
 };
 
-export const processRefundTool: Tool = {
+export const processRefundTool: Tool<any, any> = {
   name: 'process_refund',
   description: 'Process a refund for a payment, typically for returns or order cancellations. This initiates the actual money transfer back to the customer.',
   parameters: z.object({
@@ -256,7 +256,7 @@ ${index + 1}. Line Item: ${item.line_item_id}
   }
 };
 
-export const requestCommissionRefundTool: Tool = {
+export const requestCommissionRefundTool: Tool<any, any> = {
   name: 'request_commission_refund',
   description: 'Request a refund of Allegro commission fees for cancelled or returned orders. This helps recover platform fees when orders are not completed.',
   parameters: z.object({

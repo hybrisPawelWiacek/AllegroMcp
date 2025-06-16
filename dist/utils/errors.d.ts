@@ -1,8 +1,8 @@
 export declare class AllegroMCPError extends Error {
     code: string;
     statusCode: number;
-    details?: string | undefined;
-    constructor(message: string, code: string, statusCode?: number, details?: string | undefined);
+    details?: string;
+    constructor(message: string, code: string, statusCode?: number, details?: string);
 }
 export declare class OrderNotFoundError extends AllegroMCPError {
     constructor(orderId: string);
