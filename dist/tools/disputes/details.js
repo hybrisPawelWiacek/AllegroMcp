@@ -1,25 +1,28 @@
-import { z } from 'zod';
-import { mockApi } from '../../mock/index.js';
-import { handleToolError, DisputeNotFoundError } from '../../utils/errors.js';
-export const getDisputeDetailsTool = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDisputeDetailsTool = void 0;
+const zod_1 = require("zod");
+const index_js_1 = require("../../mock/index.js");
+const errors_js_1 = require("../../utils/errors.js");
+exports.getDisputeDetailsTool = {
     name: 'get_dispute_details',
     description: 'Get comprehensive information about a specific dispute including timeline, participants, and current status.',
-    parameters: z.object({
-        dispute_id: z.string()
+    parameters: zod_1.z.object({
+        dispute_id: zod_1.z.string()
             .min(1, 'Dispute ID is required')
             .describe('UUID of the dispute to retrieve')
     }),
     execute: async ({ dispute_id }, { reportProgress }) => {
         try {
             await reportProgress({ progress: 30, total: 100 });
-            const dispute = await mockApi.simulateApiCall(async () => {
-                return await mockApi.disputes.getDispute(dispute_id);
+            const dispute = await index_js_1.mockApi.simulateApiCall(async () => {
+                return await index_js_1.mockApi.disputes.getDispute(dispute_id);
             });
             if (!dispute) {
-                throw new DisputeNotFoundError(dispute_id);
+                throw new errors_js_1.DisputeNotFoundError(dispute_id);
             }
             await reportProgress({ progress: 70, total: 100 });
-            const messages = await mockApi.disputes.getDisputeMessages(dispute_id);
+            const messages = await index_js_1.mockApi.disputes.getDisputeMessages(dispute_id);
             await reportProgress({ progress: 100, total: 100 });
             // Calculate time metrics
             const createdDate = new Date(dispute.createdAt);
@@ -86,8 +89,7 @@ ${daysSinceUpdate > 2 ? '⚠️ **Note:** Extended silence may negatively impact
 - Follow up after resolution`;
         }
         catch (error) {
-            handleToolError(error, 'get_dispute_details');
+            (0, errors_js_1.handleToolError)(error, 'get_dispute_details');
         }
     }
 };
-//# sourceMappingURL=details.js.map

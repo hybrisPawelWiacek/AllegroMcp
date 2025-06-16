@@ -1,25 +1,28 @@
-import { z } from 'zod';
-import { mockApi } from '../../mock/index.js';
-import { handleToolError, OrderNotFoundError } from '../../utils/errors.js';
-export const getOrderDetailsTool = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getOrderDetailsTool = void 0;
+const zod_1 = require("zod");
+const index_js_1 = require("../../mock/index.js");
+const errors_js_1 = require("../../utils/errors.js");
+exports.getOrderDetailsTool = {
     name: 'get_order_details',
     description: 'Retrieve comprehensive order information including buyer details, items, delivery information, and payment status.',
-    parameters: z.object({
-        order_id: z.string()
+    parameters: zod_1.z.object({
+        order_id: zod_1.z.string()
             .min(1, 'Order ID cannot be empty')
             .describe('Allegro checkout form ID (order identifier)')
     }),
     execute: async ({ order_id }, { reportProgress }) => {
         try {
             await reportProgress({ progress: 25, total: 100 });
-            const order = await mockApi.simulateApiCall(async () => {
-                return await mockApi.orders.getOrder(order_id);
+            const order = await index_js_1.mockApi.simulateApiCall(async () => {
+                return await index_js_1.mockApi.orders.getOrder(order_id);
             });
             if (!order) {
-                throw new OrderNotFoundError(order_id);
+                throw new errors_js_1.OrderNotFoundError(order_id);
             }
             await reportProgress({ progress: 75, total: 100 });
-            const shipments = await mockApi.orders.getShipments(order_id);
+            const shipments = await index_js_1.mockApi.orders.getShipments(order_id);
             await reportProgress({ progress: 100, total: 100 });
             // Calculate totals
             const itemsTotal = order.lineItems.reduce((sum, item) => sum + parseFloat(item.price.amount) * item.quantity, 0);
@@ -88,8 +91,7 @@ ${index + 1}. Tracking: ${shipment.waybill}
 ${order.note ? `**📝 Notes:** ${order.note}` : ''}`;
         }
         catch (error) {
-            handleToolError(error, 'get_order_details');
+            (0, errors_js_1.handleToolError)(error, 'get_order_details');
         }
     }
 };
-//# sourceMappingURL=details.js.map

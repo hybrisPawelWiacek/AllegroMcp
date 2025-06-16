@@ -1,3 +1,3 @@
+"use strict";
 // Allegro API Types based on official documentation
-export {};
-//# sourceMappingURL=allegro.js.map
+Object.defineProperty(exports, "__esModule", { value: true });

@@ -3,6 +3,6 @@ import { monitorOrderEventsTool } from './monitor.js';
 import { getOrderDetailsTool } from './details.js';
 import { updateOrderStatusTool } from './status.js';
 import { addTrackingNumberTool } from './shipping.js';
-export declare function getOrderTools(): Tool[];
+export declare function getOrderTools(): Tool<any, any>[];
 export { monitorOrderEventsTool, getOrderDetailsTool, updateOrderStatusTool, addTrackingNumberTool };
 //# sourceMappingURL=index.d.ts.map

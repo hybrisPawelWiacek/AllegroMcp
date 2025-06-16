@@ -1,4 +1,8 @@
-export class AllegroMCPError extends Error {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MockApiError = exports.InvalidParameterError = exports.ReturnNotFoundError = exports.DisputeNotFoundError = exports.OrderNotFoundError = exports.AllegroMCPError = void 0;
+exports.handleToolError = handleToolError;
+class AllegroMCPError extends Error {
     code;
     statusCode;
     details;
@@ -10,32 +14,38 @@ export class AllegroMCPError extends Error {
         this.name = 'AllegroMCPError';
     }
 }
-export class OrderNotFoundError extends AllegroMCPError {
+exports.AllegroMCPError = AllegroMCPError;
+class OrderNotFoundError extends AllegroMCPError {
     constructor(orderId) {
         super(`Order ${orderId} not found`, 'ORDER_NOT_FOUND', 404, 'The specified order ID does not exist in the system');
     }
 }
-export class DisputeNotFoundError extends AllegroMCPError {
+exports.OrderNotFoundError = OrderNotFoundError;
+class DisputeNotFoundError extends AllegroMCPError {
     constructor(disputeId) {
         super(`Dispute ${disputeId} not found`, 'DISPUTE_NOT_FOUND', 404, 'The specified dispute ID does not exist in the system');
     }
 }
-export class ReturnNotFoundError extends AllegroMCPError {
+exports.DisputeNotFoundError = DisputeNotFoundError;
+class ReturnNotFoundError extends AllegroMCPError {
     constructor(returnId) {
         super(`Return ${returnId} not found`, 'RETURN_NOT_FOUND', 404, 'The specified return ID does not exist in the system');
     }
 }
-export class InvalidParameterError extends AllegroMCPError {
+exports.ReturnNotFoundError = ReturnNotFoundError;
+class InvalidParameterError extends AllegroMCPError {
     constructor(parameter, reason) {
         super(`Invalid parameter: ${parameter}`, 'INVALID_PARAMETER', 400, reason);
     }
 }
-export class MockApiError extends AllegroMCPError {
+exports.InvalidParameterError = InvalidParameterError;
+class MockApiError extends AllegroMCPError {
     constructor(message, originalError) {
         super(`Mock API error: ${message}`, 'MOCK_API_ERROR', 500, originalError?.message);
     }
 }
-export function handleToolError(error, toolName) {
+exports.MockApiError = MockApiError;
+function handleToolError(error, toolName) {
     if (error instanceof AllegroMCPError) {
         throw error;
     }
@@ -44,4 +54,3 @@ export function handleToolError(error, toolName) {
     }
     throw new AllegroMCPError(`Tool ${toolName} failed with unknown error`, 'UNKNOWN_ERROR', 500, String(error));
 }
-//# sourceMappingURL=errors.js.map

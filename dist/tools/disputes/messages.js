@@ -1,22 +1,25 @@
-import { z } from 'zod';
-import { mockApi } from '../../mock/index.js';
-import { handleToolError, DisputeNotFoundError } from '../../utils/errors.js';
-export const getDisputeMessagesTool = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sendDisputeMessageTool = exports.getDisputeMessagesTool = void 0;
+const zod_1 = require("zod");
+const index_js_1 = require("../../mock/index.js");
+const errors_js_1 = require("../../utils/errors.js");
+exports.getDisputeMessagesTool = {
     name: 'get_dispute_messages',
     description: 'Retrieve the complete message thread from a dispute to understand the conversation history and context.',
-    parameters: z.object({
-        dispute_id: z.string()
+    parameters: zod_1.z.object({
+        dispute_id: zod_1.z.string()
             .min(1, 'Dispute ID is required')
             .describe('UUID of the dispute')
     }),
     execute: async ({ dispute_id }, { reportProgress }) => {
         try {
             await reportProgress({ progress: 40, total: 100 });
-            const messages = await mockApi.simulateApiCall(async () => {
-                return await mockApi.disputes.getDisputeMessages(dispute_id);
+            const messages = await index_js_1.mockApi.simulateApiCall(async () => {
+                return await index_js_1.mockApi.disputes.getDisputeMessages(dispute_id);
             });
             if (messages.length === 0) {
-                throw new DisputeNotFoundError(dispute_id);
+                throw new errors_js_1.DisputeNotFoundError(dispute_id);
             }
             await reportProgress({ progress: 100, total: 100 });
             // Sort messages chronologically
@@ -74,22 +77,22 @@ ${lastMessage.text.toLowerCase().includes('zwrot') ? '- Buyer wants return - pro
 **⏰ Response Time:** ${awaitingResponse ? 'Respond within 24 hours for best results' : 'Monitor for buyer reply'}`;
         }
         catch (error) {
-            handleToolError(error, 'get_dispute_messages');
+            (0, errors_js_1.handleToolError)(error, 'get_dispute_messages');
         }
     }
 };
-export const sendDisputeMessageTool = {
+exports.sendDisputeMessageTool = {
     name: 'send_dispute_message',
     description: 'Send a message to the buyer in an existing dispute. This is your primary tool for customer communication and dispute resolution.',
-    parameters: z.object({
-        dispute_id: z.string()
+    parameters: zod_1.z.object({
+        dispute_id: zod_1.z.string()
             .min(1, 'Dispute ID is required')
             .describe('UUID of the dispute'),
-        message: z.string()
+        message: zod_1.z.string()
             .min(1, 'Message cannot be empty')
             .max(2000, 'Message too long (max 2000 characters)')
             .describe('Message text to send to the buyer'),
-        attachment_id: z.string()
+        attachment_id: zod_1.z.string()
             .optional()
             .describe('ID of previously uploaded attachment to include with message')
     }),
@@ -97,14 +100,14 @@ export const sendDisputeMessageTool = {
         try {
             await reportProgress({ progress: 30, total: 100 });
             // Validate dispute exists
-            const dispute = await mockApi.disputes.getDispute(dispute_id);
+            const dispute = await index_js_1.mockApi.disputes.getDispute(dispute_id);
             if (!dispute) {
-                throw new DisputeNotFoundError(dispute_id);
+                throw new errors_js_1.DisputeNotFoundError(dispute_id);
             }
             await reportProgress({ progress: 60, total: 100 });
             // Send the message
-            const sentMessage = await mockApi.simulateApiCall(async () => {
-                return await mockApi.disputes.sendDisputeMessage(dispute_id, message, attachment_id);
+            const sentMessage = await index_js_1.mockApi.simulateApiCall(async () => {
+                return await index_js_1.mockApi.disputes.sendDisputeMessage(dispute_id, message, attachment_id);
             });
             await reportProgress({ progress: 100, total: 100 });
             // Analyze message for automatic suggestions
@@ -147,7 +150,7 @@ ${messageAnalysis.containsSolution ? '🎯 Excellent: You offered a solution!' :
 **⏰ Follow-up Reminder:** Check for buyer response in 24-48 hours`;
         }
         catch (error) {
-            handleToolError(error, 'send_dispute_message');
+            (0, errors_js_1.handleToolError)(error, 'send_dispute_message');
         }
     }
 };
@@ -175,4 +178,3 @@ function analyzeMessage(message) {
         lowerMessage.includes('offer');
     return { type, containsSolution };
 }
-//# sourceMappingURL=messages.js.map

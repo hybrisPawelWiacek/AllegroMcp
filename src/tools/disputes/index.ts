@@ -4,7 +4,7 @@ import { getDisputeDetailsTool } from './details.js';
 import { getDisputeMessagesTool, sendDisputeMessageTool } from './messages.js';
 import { uploadDisputeAttachmentTool } from './attachments.js';
 
-export function getDisputeTools(): Tool[] {
+export function getDisputeTools(): Tool<any, any>[] {
   return [
     listDisputesTool,
     getDisputeDetailsTool,

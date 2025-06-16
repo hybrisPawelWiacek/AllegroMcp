@@ -1,10 +1,13 @@
-import { FastMCP } from 'fastmcp';
-import { getAllegroTools } from './tools/index.js';
-import { logger } from './utils/logger.js';
-export function createAllegroServer() {
-    const server = new FastMCP({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createAllegroServer = createAllegroServer;
+const fastmcp_1 = require("fastmcp");
+const index_js_1 = require("./tools/index.js");
+const logger_js_1 = require("./utils/logger.js");
+function createAllegroServer() {
+    const server = new fastmcp_1.FastMCP({
         name: process.env.MCP_SERVER_NAME || 'allegro-mcp',
-        version: process.env.MCP_SERVER_VERSION || '1.0.0',
+        version: '1.0.0',
         instructions: `
 AllegroMCP provides AI agents with comprehensive access to Allegro e-commerce operations.
 
@@ -27,22 +30,18 @@ AllegroMCP provides AI agents with comprehensive access to Allegro e-commerce op
         // No authenticate function = public access
     });
     // Register all Allegro tools
-    const tools = getAllegroTools();
-    logger.info(`📦 Registering ${tools.length} Allegro tools...`);
+    const tools = (0, index_js_1.getAllegroTools)();
+    logger_js_1.logger.info(`📦 Registering ${tools.length} Allegro tools...`);
     tools.forEach(tool => {
         server.addTool(tool);
-        logger.debug(`✅ Registered tool: ${tool.name}`);
+        logger_js_1.logger.debug(`✅ Registered tool: ${tool.name}`);
     });
     // Add server events for monitoring
     server.on('connect', (event) => {
-        logger.info(`🔗 Client connected: ${event.session?.id || 'unknown'}`);
+        logger_js_1.logger.info(`🔗 Client connected: ${event.session || 'unknown'}`);
     });
     server.on('disconnect', (event) => {
-        logger.info(`🔌 Client disconnected: ${event.session?.id || 'unknown'}`);
-    });
-    server.on('error', (error) => {
-        logger.error('🚨 Server error:', error);
+        logger_js_1.logger.info(`🔌 Client disconnected: ${event.session || 'unknown'}`);
     });
     return server;
 }
-//# sourceMappingURL=server.js.map

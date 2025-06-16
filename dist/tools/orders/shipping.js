@@ -1,23 +1,26 @@
-import { z } from 'zod';
-import { mockApi } from '../../mock/index.js';
-import { handleToolError, OrderNotFoundError } from '../../utils/errors.js';
-export const addTrackingNumberTool = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.addTrackingNumberTool = void 0;
+const zod_1 = require("zod");
+const index_js_1 = require("../../mock/index.js");
+const errors_js_1 = require("../../utils/errors.js");
+exports.addTrackingNumberTool = {
     name: 'add_tracking_number',
     description: 'Add tracking information to an order shipment. This allows customers to track their packages and provides delivery updates.',
-    parameters: z.object({
-        order_id: z.string()
+    parameters: zod_1.z.object({
+        order_id: zod_1.z.string()
             .min(1, 'Order ID is required')
             .describe('Allegro checkout form ID'),
-        carrier_name: z.string()
+        carrier_name: zod_1.z.string()
             .min(1, 'Carrier name is required')
             .describe('Name of the shipping carrier (e.g., InPost, DPD, DHL)'),
-        tracking_number: z.string()
+        tracking_number: zod_1.z.string()
             .min(1, 'Tracking number is required')
             .describe('Package tracking/waybill number from carrier'),
-        line_item_ids: z.array(z.string())
+        line_item_ids: zod_1.z.array(zod_1.z.string())
             .min(1, 'At least one line item must be specified')
             .describe('Array of line item IDs being shipped in this package'),
-        estimated_delivery: z.string()
+        estimated_delivery: zod_1.z.string()
             .optional()
             .describe('Estimated delivery date (ISO format)')
     }),
@@ -25,11 +28,11 @@ export const addTrackingNumberTool = {
         try {
             await reportProgress({ progress: 20, total: 100 });
             // Validate order exists
-            const order = await mockApi.simulateApiCall(async () => {
-                return await mockApi.orders.getOrder(order_id);
+            const order = await index_js_1.mockApi.simulateApiCall(async () => {
+                return await index_js_1.mockApi.orders.getOrder(order_id);
             });
             if (!order) {
-                throw new OrderNotFoundError(order_id);
+                throw new errors_js_1.OrderNotFoundError(order_id);
             }
             await reportProgress({ progress: 50, total: 100 });
             // Validate line items exist in order
@@ -40,8 +43,8 @@ export const addTrackingNumberTool = {
             }
             await reportProgress({ progress: 80, total: 100 });
             // Add shipment tracking
-            const shipment = await mockApi.simulateApiCall(async () => {
-                return await mockApi.orders.addShipment(order_id, carrier_name, tracking_number, line_item_ids);
+            const shipment = await index_js_1.mockApi.simulateApiCall(async () => {
+                return await index_js_1.mockApi.orders.addShipment(order_id, carrier_name, tracking_number, line_item_ids);
             });
             await reportProgress({ progress: 100, total: 100 });
             // Get shipped items details
@@ -95,8 +98,7 @@ ${estimated_delivery ? `**📅 Estimated Delivery:** ${new Date(estimated_delive
 - Handle any delivery issues promptly`;
         }
         catch (error) {
-            handleToolError(error, 'add_tracking_number');
+            (0, errors_js_1.handleToolError)(error, 'add_tracking_number');
         }
     }
 };
-//# sourceMappingURL=shipping.js.map

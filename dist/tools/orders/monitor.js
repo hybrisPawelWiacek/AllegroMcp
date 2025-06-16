@@ -1,17 +1,20 @@
-import { z } from 'zod';
-import { mockApi } from '../../mock/index.js';
-import { handleToolError } from '../../utils/errors.js';
-export const monitorOrderEventsTool = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.monitorOrderEventsTool = void 0;
+const zod_1 = require("zod");
+const index_js_1 = require("../../mock/index.js");
+const errors_js_1 = require("../../utils/errors.js");
+exports.monitorOrderEventsTool = {
     name: 'monitor_order_events',
     description: 'Monitor order events and changes in real-time. This tool polls for new order events like status changes, payment updates, and fulfillment progress.',
-    parameters: z.object({
-        from_event_id: z.string()
+    parameters: zod_1.z.object({
+        from_event_id: zod_1.z.string()
             .optional()
             .describe('Start monitoring from this event ID (for pagination)'),
-        event_type: z.enum(['ORDER_STATUS_CHANGED', 'FULFILLMENT_STATUS_CHANGED', 'PAYMENT_STATUS_CHANGED', 'DISPUTE_CREATED', 'RETURN_CREATED'])
+        event_type: zod_1.z.enum(['ORDER_STATUS_CHANGED', 'FULFILLMENT_STATUS_CHANGED', 'PAYMENT_STATUS_CHANGED', 'DISPUTE_CREATED', 'RETURN_CREATED'])
             .optional()
             .describe('Filter events by type'),
-        limit: z.number()
+        limit: zod_1.z.number()
             .min(1)
             .max(100)
             .default(20)
@@ -20,8 +23,8 @@ export const monitorOrderEventsTool = {
     execute: async ({ from_event_id, event_type, limit }, { reportProgress }) => {
         try {
             await reportProgress({ progress: 25, total: 100 });
-            const events = await mockApi.simulateApiCall(async () => {
-                return await mockApi.orders.getEvents(from_event_id, limit);
+            const events = await index_js_1.mockApi.simulateApiCall(async () => {
+                return await index_js_1.mockApi.orders.getEvents(from_event_id, limit);
             });
             await reportProgress({ progress: 75, total: 100 });
             // Filter by event type if specified
@@ -57,8 +60,7 @@ ${filteredEvents.map((event, index) => `
 - Consider processing these events to trigger automated responses`;
         }
         catch (error) {
-            handleToolError(error, 'monitor_order_events');
+            (0, errors_js_1.handleToolError)(error, 'monitor_order_events');
         }
     }
 };
-//# sourceMappingURL=monitor.js.map

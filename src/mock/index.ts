@@ -3,10 +3,10 @@ import { mockDisputeStore } from './disputes.js';
 import { mockReturnStore } from './returns.js';
 import { logger } from '../utils/logger.js';
 
-export class MockApiService {
+class MockApiService {
   private static instance: MockApiService;
-  private delayMs: number;
-  private errorRate: number;
+  public delayMs: number;
+  public errorRate: number;
 
   private constructor() {
     this.delayMs = parseInt(process.env.MOCK_DELAY_MS || '200');
@@ -51,6 +51,8 @@ export class MockApiService {
     return mockReturnStore;
   }
 }
+
+export { MockApiService };
 
 export const mockApi = MockApiService.getInstance();
 export { mockOrderStore, mockDisputeStore, mockReturnStore };

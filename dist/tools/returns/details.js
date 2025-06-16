@@ -1,22 +1,25 @@
-import { z } from 'zod';
-import { mockApi } from '../../mock/index.js';
-import { handleToolError, ReturnNotFoundError } from '../../utils/errors.js';
-export const getReturnDetailsTool = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getReturnDetailsTool = void 0;
+const zod_1 = require("zod");
+const index_js_1 = require("../../mock/index.js");
+const errors_js_1 = require("../../utils/errors.js");
+exports.getReturnDetailsTool = {
     name: 'get_return_details',
     description: 'Retrieve comprehensive information about a customer return request including items, reasons, and refund calculations.',
-    parameters: z.object({
-        return_id: z.string()
+    parameters: zod_1.z.object({
+        return_id: zod_1.z.string()
             .min(1, 'Return ID is required')
             .describe('UUID of the customer return')
     }),
     execute: async ({ return_id }, { reportProgress }) => {
         try {
             await reportProgress({ progress: 40, total: 100 });
-            const returnData = await mockApi.simulateApiCall(async () => {
-                return await mockApi.returns.getReturn(return_id);
+            const returnData = await index_js_1.mockApi.simulateApiCall(async () => {
+                return await index_js_1.mockApi.returns.getReturn(return_id);
             });
             if (!returnData) {
-                throw new ReturnNotFoundError(return_id);
+                throw new errors_js_1.ReturnNotFoundError(return_id);
             }
             await reportProgress({ progress: 100, total: 100 });
             // Calculate return metrics
@@ -100,7 +103,7 @@ ${totalValue > 200 ? '• Consider partial refund if items show wear' : ''}
 ${daysSinceCreated > 5 ? '⚠️ **Note:** Extended processing time may affect seller ratings' : ''}`;
         }
         catch (error) {
-            handleToolError(error, 'get_return_details');
+            (0, errors_js_1.handleToolError)(error, 'get_return_details');
         }
     }
 };
@@ -133,4 +136,3 @@ function analyzeReturnReasons(reasons) {
     });
     return categories;
 }
-//# sourceMappingURL=details.js.map

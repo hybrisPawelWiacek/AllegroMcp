@@ -4,7 +4,7 @@ import { getOrderDetailsTool } from './details.js';
 import { updateOrderStatusTool } from './status.js';
 import { addTrackingNumberTool } from './shipping.js';
 
-export function getOrderTools(): Tool[] {
+export function getOrderTools(): Tool<any, any>[] {
   return [
     monitorOrderEventsTool,
     getOrderDetailsTool,
