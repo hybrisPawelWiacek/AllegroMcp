@@ -1,6 +1,6 @@
 {
   "language": "nodejs",
-  "run": "./start.sh",
+  "run": "node deploy.js",
   "entrypoint": "src/index.ts",
   "modules": ["nodejs-20"],
   "hidden": [".config", "package-lock.json"],
@@ -9,7 +9,7 @@
     "PORT": "5000"
   },
   "deployment": {
-    "run": "./start.sh",
+    "run": "node deploy.js",
     "deploymentTarget": "cloudrun"
   }
 }

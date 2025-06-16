@@ -1,7 +1,7 @@
 const http = require('http');
 
 const testSSE = () => {
-  const url = 'http://localhost:5000/sse';
+  const url = 'http://localhost:3000/sse';
   
   console.log('Testing SSE endpoint:', url);
   
