@@ -9,19 +9,23 @@ async function main() {
   try {
     const server = createAllegroServer();
     
-    // Configure for public SSE access
+    // Configure for public access
     const port = parseInt(process.env.PORT || '5000');
     
     logger.info('🚀 Starting AllegroMCP Server...');
-    logger.info(`📡 SSE endpoint will be available at: http://localhost:${port}/sse`);
-    logger.info(`🌍 Public access: ${process.env.ENABLE_PUBLIC_ACCESS === 'true' ? 'ENABLED' : 'DISABLED'}`);
+    logger.info(`📡 SSE endpoint will be available at: http://0.0.0.0:${port}/sse`);
+    logger.info(`🌍 Public access: ENABLED`);
     
     await server.start({
-      transportType: 'stdio'
+      transportType: 'httpStream',
+      httpStream: {
+        port: port,
+        endpoint: '/sse'
+      }
     });
     
     logger.info('✅ AllegroMCP Server is running and publicly accessible!');
-    logger.info(`🔗 Connect via: http://localhost:${port}/sse`);
+    logger.info(`🔗 Connect via: http://0.0.0.0:${port}/sse`);
     
   } catch (error) {
     logger.error('❌ Failed to start AllegroMCP Server:', error);
