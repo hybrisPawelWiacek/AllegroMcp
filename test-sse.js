@@ -1,11 +1,11 @@
-const https = require('https');
+const http = require('http');
 
 const testSSE = () => {
-  const url = 'https://f28d061b-c35a-436c-a99d-2755b228799a-00-1owz4gqnq1vk5.kirk.replit.dev/sse';
+  const url = 'http://localhost:5000/sse';
   
   console.log('Testing SSE endpoint:', url);
   
-  const req = https.get(url, {
+  const req = http.get(url, {
     headers: {
       'Accept': 'text/event-stream',
       'Cache-Control': 'no-cache'
