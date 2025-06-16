@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  allegro-mcp:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - LOG_LEVEL=info
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/sse"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

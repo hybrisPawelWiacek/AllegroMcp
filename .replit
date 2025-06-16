@@ -15,14 +15,6 @@ author = "agent"
 task = "workflow.run"
 args = "AllegroMCP Server"
 
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "build"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Production Test"
-
 [[workflows.workflow]]
 name = "AllegroMCP Server"
 author = "agent"
@@ -31,23 +23,6 @@ author = "agent"
 task = "shell.exec"
 args = "npx tsx src/index.ts"
 waitForPort = 5000
-
-[[workflows.workflow]]
-name = "build"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"Build step completed - using tsx for direct TypeScript execution\""
-
-[[workflows.workflow]]
-name = "Production Test"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "NODE_ENV=production PORT=3000 node deploy.js"
-waitForPort = 3000
 
 [deployment]
 run = ["sh", "-c", "npm install && npm run build && npm start"]
